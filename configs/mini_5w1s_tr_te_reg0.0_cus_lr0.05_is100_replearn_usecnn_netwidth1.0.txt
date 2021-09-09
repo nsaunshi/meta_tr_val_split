@@ -1,0 +1,52 @@
+# Name of the run for wand logging and checkpoint directory. If commented, then it uses the file name (without .txt) as prefix (recommended)
+# prefix: omni_5w1s_tr_te_reg1.0_cus_lr0.05_is100_replearn
+
+# outer loop
+learner: replearn
+lr: 0.001               # outer learning rate
+batch_size: 16          # number of tasks per batch
+epochs: 1               # mostly irrelevant for omnigot/miniimagenet
+eval_freq: 500          # how often to evaluate model and log
+save_freq: 2000         # how often to checkpoint the model
+stop_eval: 20           # number of tasks to evaluate on = stop_eval * batch_size
+clip_grad_norm: 10.     # clip norm of gradient
+device: cuda          # where to run the code on
+iterations: 30000       # number of batches to use for training
+save: True              # whether to checkpoint model or not
+
+# train inner loop
+reg: 0.0                #  regularization strength (same as lambda)
+classifier: False       # whether to learn a fixed classifier in replearn
+variant: tr-te          # training using tr-tr or tr-te method
+custom: True            # whether to use custom gradient descent implementation or scikit for inner loop
+firstorder: True        # whether to run first-order approximation (ignore second order gradients for reps)
+train_inner_steps: 100  # number of inner steps during meta-training
+eval_inner_steps: 100   # number of inner steps for eval
+inner_lr: 0.05          # learning rate for inner loop gradient descent (only is custom is True). <= 0.1 for omni, <= 0.01 for mini
+
+# eval inner loop. If nothing is provided, then uses train inner loop
+transductive: True      # Setting to evaluate models
+
+# data
+dataset: mini           # Dataset to train on: omni, mini, simul, sine
+N_way: 5                # classes per task (for classification tasks of omni, mini)
+tr_n_tr: 1              # number of train examples per task per class during meta-training
+tr_n_te: 1              # number of val examples per task per class during meta-training
+te_n_tr: 1              # number of train examples per task per class during meta-testing
+te_n_te: 1              # number of val examples per task per class during meta-testing
+
+# logging
+wandb: True             # Whether to use weights and biases for logging
+debug: True             # Whether to print statements
+
+# random seeds
+np_seed: 0
+torch_seed: 0
+
+# evaluation (ignore for now)
+evaluate: False
+checkpoint: ../models/omni_tr_te_reg_1/
+ 
+
+useconv: True 
+netwidth: 1.0 
